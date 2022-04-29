@@ -88,15 +88,17 @@ public class Robot extends TimedRobot {
     right1 = new CANSparkMax (RobotMap.RIGHT1, MotorType.kBrushless);
     right2 = new CANSparkMax (RobotMap.RIGHT2, MotorType.kBrushless);
     
+    left1.restoreFactoryDefaults();
+    left2.restoreFactoryDefaults();
+    right1.restoreFactoryDefaults();
+    right2.restoreFactoryDefaults();
+
     left1.setInverted(RobotMap.IS_LEFT1_INVERTED);
     left2.setInverted(RobotMap.IS_LEFT2_INVERTED);
     right1.setInverted(RobotMap.IS_RIGHT1_INVERTED);
     right2.setInverted(RobotMap.IS_RIGHT2_INVERTED);
 
-    left1.restoreFactoryDefaults();
-    left2.restoreFactoryDefaults();
-    right1.restoreFactoryDefaults();
-    right2.restoreFactoryDefaults();
+    
 
     driveEncoders = new RelativeEncoder[]{
       left1.getEncoder(Type.kHallSensor, 42), left2.getEncoder(Type.kHallSensor, 42),
@@ -129,6 +131,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     m_odometry.update(gyro.getRotation2d(), driveEncoders[0].getPosition(), driveEncoders[3].getPosition());
+    updateDashboard();
   }
 
   /**
@@ -223,7 +226,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    drivebase.arcadeDrive(driverController.getLeftY(), driverController.getRightX());
+    // drivebase.arcadeDrive(driverController.getLeftY(), driverController.getRightX());
     changeDrive();
     drive();
   }
@@ -244,7 +247,7 @@ public class Robot extends TimedRobot {
     if(isArcade)
       drivebase.arcadeDrive(driverController.getLeftY(), driverController.getRightX(), true);
     else
-      drivebase.tankDrive(driverController.getLeftY(), driverController.getRightX(), true);
+      drivebase.tankDrive(driverController.getLeftY(), driverController.getRightY(), true);
   }
   /** Does nothing. */
   public void doNothing(){

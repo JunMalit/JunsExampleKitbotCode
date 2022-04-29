@@ -7,10 +7,10 @@ public class RobotMap {
     public static final int OPERATOR_PORT = 1;
 
     // Drive motor port IDs
-    public static final int LEFT1 = 11;
-    public static final int LEFT2 = 12;
-    public static final int RIGHT1 = 13;
-    public static final int RIGHT2 = 14;
+    public static final int LEFT1 = 3;
+    public static final int LEFT2 = 4;
+    public static final int RIGHT1 = 1;
+    public static final int RIGHT2 = 2;
 
     // Whether a drive motor is inverted or not
     public static final boolean IS_LEFT1_INVERTED = false;
