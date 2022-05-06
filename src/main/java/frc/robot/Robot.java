@@ -76,6 +76,9 @@ public class Robot extends TimedRobot {
   private RamseteController autoController = new RamseteController();
   private Trajectory m_trajectory;
   private int autoStep;
+  private WheelSpeeds m_wheelspeeds;
+  private State desiredState;
+  private ChassisSpeeds m_ChassisSpeeds;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -156,8 +159,8 @@ public class Robot extends TimedRobot {
       case kCustomAuto:
         m_trajectory = TrajectoryGenerator.generateTrajectory(
             m_odometry.getPoseMeters(), 
-            List.of(new Translation2d(1, 1), new Translation2d(2, -1)), 
-            new Pose2d(3, 0, Rotation2d.fromDegrees(0)), 
+            List.of(new Translation2d(10, 10), new Translation2d(20, -10)), 
+            new Pose2d(30, 0, Rotation2d.fromDegrees(0)), 
             config
           );
         break;
@@ -188,7 +191,8 @@ public class Robot extends TimedRobot {
         switch (autoStep){
           // Step 1
           case 1:
-            followTrajectory();
+            // followTrajectory();
+            drivebase.tankDrive(0.5, 0.5);
             if(autoController.atReference())
               autoStep = 2;
           break;
@@ -201,22 +205,23 @@ public class Robot extends TimedRobot {
           // Step 3 (last step) starts once the timer elapses 10 seconds
           case 3:
           default:
-            drivebase.stopMotor();
+            drivebase.tankDrive(0.5, 0.5);
           break;
         }
         break;
       case kDefaultAuto:
       default:
         // Put default auto code here
-        doNothing();
+        // drivebase.tankDrive(5, 5);
         break;
     }
   }
   public void followTrajectory(){
-    State desiredState = m_trajectory.sample(m_timer.get());
-    ChassisSpeeds m_ChassisSpeeds = autoController.calculate(m_odometry.getPoseMeters(), desiredState);
-    WheelSpeeds m_wheelspeeds = DifferentialDrive.arcadeDriveIK(m_ChassisSpeeds.vxMetersPerSecond, m_ChassisSpeeds.omegaRadiansPerSecond, true);
-    drivebase.tankDrive(m_wheelspeeds.left, m_wheelspeeds.right, true);
+    desiredState = m_trajectory.sample(m_timer.get());
+    m_ChassisSpeeds = autoController.calculate(m_odometry.getPoseMeters(), desiredState);
+    m_wheelspeeds = DifferentialDrive.arcadeDriveIK(m_ChassisSpeeds.vxMetersPerSecond, m_ChassisSpeeds.omegaRadiansPerSecond, true);
+    // drivebase.tankDrive(m_wheelspeeds.left, m_wheelspeeds.right, true);
+    drivebase.tankDrive(0.5, 0.5);
   }
   /** This function is called once when teleop is enabled. */
   @Override
@@ -245,7 +250,7 @@ public class Robot extends TimedRobot {
   /** Using joystick inputs from driver 1, drives the robot based on whether arcade drive is enabled. */
   public void drive(){
     if(isArcade)
-      drivebase.arcadeDrive(driverController.getLeftY(), driverController.getRightX(), true);
+      drivebase.arcadeDrive(driverController.getLeftY(), -(driverController.getRightX()), true);
     else
       drivebase.tankDrive(driverController.getLeftY(), driverController.getRightY(), true);
   }
@@ -273,6 +278,11 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Left2", driveEncoders[1].getVelocity());
     SmartDashboard.putNumber("Right1", driveEncoders[2].getVelocity());
     SmartDashboard.putNumber("Right2", driveEncoders[3].getVelocity());
+    SmartDashboard.putNumber("leftpos", driveEncoders[1].getPosition());
+    SmartDashboard.putNumber("rightpos", driveEncoders[3].getPosition());
+    SmartDashboard.putNumber("x", m_odometry.getPoseMeters().getX());
+    SmartDashboard.putNumber("y", m_odometry.getPoseMeters().getY());
+    SmartDashboard.putNumber("step", autoStep);
   }
 
   /** This function is called once when the robot is disabled. */
@@ -292,3 +302,4 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {}
   
 }
+//Despite the argument that political factors were a significant factor in the MExican revolution, becuase of your mom and  deez nuts, tthis shows that social factors were the most significant factor in the mexican revolution. Furthermore, 

@@ -13,9 +13,9 @@ public class RobotMap {
     public static final int RIGHT2 = 2;
 
     // Whether a drive motor is inverted or not
-    public static final boolean IS_LEFT1_INVERTED = false;
-    public static final boolean IS_LEFT2_INVERTED = false;
-    public static final boolean IS_RIGHT1_INVERTED = true;
-    public static final boolean IS_RIGHT2_INVERTED = true;
+    public static final boolean IS_LEFT1_INVERTED = true;
+    public static final boolean IS_LEFT2_INVERTED = true;
+    public static final boolean IS_RIGHT1_INVERTED = false;
+    public static final boolean IS_RIGHT2_INVERTED = false;
 
 }
